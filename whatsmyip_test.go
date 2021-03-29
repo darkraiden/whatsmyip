@@ -15,7 +15,7 @@ import (
 
 func TestGetBaseURL(t *testing.T) {
 	t.Run("test the GetBaseURL function and its content", func(t *testing.T) {
-		expected := "https://ifconfig.me"
+		expected := "http://ifconfig.me"
 		actual := whatsmyip.GetBaseURL()
 
 		require.NotEmpty(t, actual)
