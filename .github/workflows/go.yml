@@ -1,0 +1,49 @@
+name: Go
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: auto
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+
+      - name: Go get
+        run: |
+          go get -u github.com/golang/mock
+          go get -u github.com/golang/mock/mockgen
+          go get -u github.com/stretchr/testify
+
+      - name: Generate mocks files
+        run: go generate ./...
+
+      - name: Test
+        run: go test -v ./...
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Deploy to Docker registry
+        uses: docker/build-push-action@v2
+        with:
+          tags: davidedimauro88/whatsmyip:latest,davidedimauro88/whatsmyip:env.GITHUB_REF
