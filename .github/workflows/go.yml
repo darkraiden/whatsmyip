@@ -46,4 +46,8 @@ jobs:
       - name: Deploy to Docker registry
         uses: docker/build-push-action@v2
         with:
-          tags: davidedimauro88/whatsmyip:latest,davidedimauro88/whatsmyip:env.GITHUB_REF
+          push: true
+          tags: davidedimauro88/whatsmyip:latest,davidedimauro88/whatsmyip:${{ github.sha }}
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
