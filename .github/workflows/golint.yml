@@ -1,0 +1,28 @@
+---
+name: Golang Linting
+on:
+  pull_request:
+    types: ["opened", "synchronize"]
+    paths:
+      - "**.go"
+      - ".github/workflows/**"
+
+jobs:
+  golint:
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+    strategy:
+      fail-fast: true
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.16.0"
+      - run: |
+          go get -u github.com/golang/mock/mockgen
+          go generate ./...
+      - uses: golangci/golangci-lint-action@v2
+        with:
+          version: "v1.32"
+          args: --timeout=30m0s

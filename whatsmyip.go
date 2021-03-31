@@ -38,12 +38,15 @@ func Get(client Doer) (string, error) {
 	}
 	defer res.Body.Close()
 
-	return readCloserToString(res.Body), nil
+	return readCloserToString(res.Body)
 }
 
-func readCloserToString(rc io.ReadCloser) string {
+func readCloserToString(rc io.ReadCloser) (string, error) {
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(rc)
+	_, err := buf.ReadFrom(rc)
+	if err != nil {
+		return "", err
+	}
 
-	return buf.String()
+	return buf.String(), nil
 }
