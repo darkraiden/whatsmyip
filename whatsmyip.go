@@ -17,7 +17,7 @@ type Getter interface {
 	Get(Doer) (string, error)
 }
 
-var ipGetterURL string = "http://ifconfig.me"
+var ipGetterURL string = "https://api.ipify.org?format=text"
 
 // GetBaseURL gives the user an idea of which site
 // is used to fetch the host IP address
